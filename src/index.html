@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
 
     <title>5th Element</title>
 
@@ -13,9 +14,24 @@
   <body>
     <div id="grid"></div>
 
-    <button id="stopButton">Stop</button>
+    <footer>
+      <label>
+        People (<span id="columnConter"></span>)
+        <input type="range" id="columns" value="3" min="2" max="50">
+      </label>
 
-    <script src="js/5th-element.dev.js"></script>
+      <label>
+        Grid length in minutes (<span id="rowCounter"></span>)
+        <input type="range" id="rows" value="15" min="2" max="20">
+      </label>
+
+      <div class="controllers">
+        <button id="stopButton">STOOOP!</button>
+        <button id="downloadButton"></button>
+      </div>
+
+    </footer>
+
     <script src="js/5th-element.js"></script>
   </body>
 </html>

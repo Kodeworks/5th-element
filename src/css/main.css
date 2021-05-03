@@ -1,4 +1,25 @@
+body {
+  font-family: HelveticaNeue-light, sans-serif;
+  font-size: 14px;
+  line-height: 1.625;
+  margin: 0;
+}
+
 svg {
   display: block;
   margin: 100px auto 0 auto;
+}
+
+footer {
+  background-color: #efefef;
+  padding: 45px 25px;
+}
+
+label {
+  display: block;
+  padding: 5px 0;
+}
+
+.controllers {
+  margin-top: 15px;
 }
