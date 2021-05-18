@@ -8,6 +8,9 @@ const groups = [];
 const gridHeight = 400;
 const gridWidth = 600;
 
+let fillrate = 0.0;
+let kwProb = 0.0;
+
 let seconds = 5;
 let gridLengthInMinutes = 15;
 let people = 14;
@@ -34,10 +37,34 @@ stopButton.addEventListener('click', disconnect);
 /* Initialize
 -----------------------------------------------------------------------------*/
 function initialize() {
+  const urlParams = new URLSearchParams(window.location.search);
+
+  setFillrate(urlParams.get('fillrate'));
+  setKwProb(urlParams.get('kwProb'));
+
   connect();
   drawCircles();
 }
+
 initialize();
+
+/* Helpers
+-----------------------------------------------------------------------------*/
+function isNumeric(str) {
+  return typeof str == 'string' && !isNaN(str) && !isNaN(parseFloat(str));
+}
+
+function setFillrate(value) {
+  if (isNumeric(value)) {
+    fillrate = value;
+  }
+}
+
+function setKwProb(value) {
+  if (isNumeric(value)) {
+    kwProb = value;
+  }
+}
 
 /* Handlers
 -----------------------------------------------------------------------------*/
@@ -185,7 +212,7 @@ function connect() {
   console.log('Ready state', socket);
   if (!socket || socket.readyState == 3) {
     socket = new WebSocket(
-      `ws://io.kodeworks.no/api/ws?rowseconds=${seconds}&fillrate=0.005&kwprob=0.999`
+      `ws://io.kodeworks.no/api/ws?rowseconds=${seconds}&fillrate=${fillrate}&kwprob=${kwProb}`
     );
 
     socket.addEventListener('open', function (event) {
