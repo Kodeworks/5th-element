@@ -174,6 +174,14 @@ function draw(conversation) {
     .attr('transform', 'translate(0, 0)')
     .attr('fill', 'none');
 
+  function getStrokeWidth(interaction) {
+    if (interaction.kw == true) {
+      return interaction.fat == true ? 8 : 2;
+    }
+
+    return Math.floor(Math.random() * 6) < 5 ? 2 : 8;
+  }
+
   conversation.interactions.forEach((interaction) => {
     const receiverIndex = interaction.time
       ? Math.floor((conversation.time - interaction.time) / seconds)
@@ -181,8 +189,8 @@ function draw(conversation) {
 
     const path = group
       .append('path')
-      .attr('stroke-width', Math.floor(Math.random() * 6) < 5 ? 2 : 8)
-      .attr('stroke', interaction.kw === true ? 'rgb(200, 252, 160)' : 'black')
+      .attr('stroke-width', getStrokeWidth(interaction))
+      .attr('stroke', interaction.kw == true ? 'rgb(200, 252, 160)' : 'black')
       .attr(
         'd',
         d3.line()(
