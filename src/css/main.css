@@ -7,7 +7,7 @@ body {
 
 svg {
   display: block;
-  margin: 100px auto 0 auto;
+  margin: 0 auto;
 }
 
 footer {
@@ -20,6 +20,46 @@ label {
   padding: 5px 0;
 }
 
-.controllers {
-  margin-top: 15px;
+label input {
+  display: block;
+  margin: 0;
+}
+
+#grid {
+  flex-grow: 1;
+}
+
+#settings {
+  background: #efefef;
+  box-sizing: border-box;
+  width: 300px;
+}
+
+#settings h2 {
+  font-weight: 400;
+  margin: 0;
+  padding: 50px 25px 25px 25px;
+}
+
+.settings-section {
+  padding: 25px;
+}
+
+.settings-section:not(:last-child) {
+  border-bottom: 1px solid #afafaf;
+}
+
+.container {
+  display: flex;
+
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.meta {
+  color: #4a4a4a;
+  font-size: 11px;
 }

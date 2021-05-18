@@ -1,5 +1,11 @@
-const columnConter = document.getElementById('columnConter');
+const columnInputValueDisplay = document.getElementById('columnConter');
 const columnInput = document.getElementById('columns');
+const fillrateInput = document.getElementById('fillrate');
+const fillrateInputValueDisplay = document.getElementById(
+  'fillrateValueDisplay'
+);
+const kwprobInput = document.getElementById('kwprob');
+const kwprobInputValueDisplay = document.getElementById('kwprobValueDisplay');
 const startButton = document.getElementById('startButton');
 const stopButton = document.getElementById('stopButton');
 
@@ -9,7 +15,7 @@ const gridHeight = 400;
 const gridWidth = 600;
 
 let fillrate = 0.0;
-let kwProb = 0.0;
+let kwprob = 0.5;
 
 let seconds = 5;
 let gridLengthInMinutes = 15;
@@ -22,15 +28,29 @@ let grid = d3
   .select('#grid')
   .append('svg')
   .attr('width', gridWidth)
-  .attr('height', gridHeight * 2)
+  .attr('height', '100vh')
   .attr('xmlns', 'http://www.w3.org/2000/svg');
 
-columnConter.innerText = people;
+columnInputValueDisplay.innerText = people;
 columnInput.value = people;
+
+fillrateInputValueDisplay.innerText = fillrate;
+fillrateInput.value = fillrate;
+
+kwprobInputValueDisplay.innerText = kwprob;
+kwprobInput.value = kwprob;
 
 /* Listeners
 -----------------------------------------------------------------------------*/
+columnInput.addEventListener('change', handleRedraw);
 columnInput.addEventListener('input', handleColumnChange);
+
+fillrateInput.addEventListener('change', reconnect);
+fillrateInput.addEventListener('input', handleFillrateChange);
+
+kwprobInput.addEventListener('change', reconnect);
+kwprobInput.addEventListener('input', handleKwProbChange);
+
 startButton.addEventListener('click', connect);
 stopButton.addEventListener('click', disconnect);
 
@@ -40,7 +60,7 @@ function initialize() {
   const urlParams = new URLSearchParams(window.location.search);
 
   setFillrate(urlParams.get('fillrate'));
-  setKwProb(urlParams.get('kwProb'));
+  setKwprob(urlParams.get('kwprob'));
 
   connect();
   drawCircles();
@@ -54,24 +74,47 @@ function isNumeric(str) {
   return typeof str == 'string' && !isNaN(str) && !isNaN(parseFloat(str));
 }
 
-function setFillrate(value) {
+function setColumn(value) {
   if (isNumeric(value)) {
-    fillrate = value;
+    people = value;
+
+    columnInput.value = value;
+    columnInputValueDisplay.innerText = value;
   }
 }
 
-function setKwProb(value) {
+function setFillrate(value) {
   if (isNumeric(value)) {
-    kwProb = value;
+    fillrate = value;
+
+    fillrateInput.value = value;
+    fillrateInputValueDisplay.innerText = value;
+  }
+}
+
+function setKwprob(value) {
+  if (isNumeric(value)) {
+    kwprob = value;
+
+    kwprobInput.value = value;
+    kwprobInputValueDisplay.innerText = value;
   }
 }
 
 /* Handlers
 -----------------------------------------------------------------------------*/
 function handleColumnChange(event) {
-  people = event.target.value;
-  columnConter.innerText = people;
-  handleRedraw();
+  // people = event.target.value;
+  // handleRedraw();
+  setColumn(event.target.value);
+}
+
+function handleFillrateChange(event) {
+  setFillrate(event.target.value);
+}
+
+function handleKwProbChange(event) {
+  setKwprob(event.target.value);
 }
 
 function handleConversation(conversation) {
@@ -100,7 +143,7 @@ function handleRedraw() {
     .select('#grid')
     .append('svg')
     .attr('width', gridWidth)
-    .attr('height', gridHeight * 2)
+    .attr('height', '100vh')
     .attr('xmlns', 'http://www.w3.org/2000/svg');
 
   drawCircles();
@@ -212,7 +255,7 @@ function connect() {
   console.log('Ready state', socket);
   if (!socket || socket.readyState == 3) {
     socket = new WebSocket(
-      `ws://io.kodeworks.no/api/ws?rowseconds=${seconds}&fillrate=${fillrate}&kwprob=${kwProb}`
+      `ws://io.kodeworks.no/api/ws?rowseconds=${seconds}&fillrate=${fillrate}&kwprob=${kwprob}`
     );
 
     socket.addEventListener('open', function (event) {
@@ -235,4 +278,9 @@ function connect() {
 function disconnect() {
   socket.close();
   clearInterval(drawInterval);
+}
+
+function reconnect() {
+  disconnect();
+  setTimeout(() => connect(), 500);
 }
