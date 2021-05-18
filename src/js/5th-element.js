@@ -5,12 +5,12 @@ const stopButton = document.getElementById('stopButton');
 
 const conversations = [];
 const groups = [];
-const gridHeight = 800;
+const gridHeight = 400;
 const gridWidth = 600;
 
 let seconds = 5;
 let gridLengthInMinutes = 15;
-let people = 5;
+let people = 14;
 
 let drawInterval;
 let socket;
@@ -19,7 +19,7 @@ let grid = d3
   .select('#grid')
   .append('svg')
   .attr('width', gridWidth)
-  .attr('height', gridHeight)
+  .attr('height', gridHeight * 2)
   .attr('xmlns', 'http://www.w3.org/2000/svg');
 
 columnConter.innerText = people;
@@ -73,7 +73,7 @@ function handleRedraw() {
     .select('#grid')
     .append('svg')
     .attr('width', gridWidth)
-    .attr('height', gridHeight)
+    .attr('height', gridHeight * 2)
     .attr('xmlns', 'http://www.w3.org/2000/svg');
 
   drawCircles();
@@ -106,16 +106,13 @@ function draw(conversation) {
 
   conversation.interactions.forEach((interaction) => {
     const receiverIndex = interaction.time
-      ? Math.floor((conversation.time - interaction.time) / 2)
+      ? Math.floor((conversation.time - interaction.time) / seconds)
       : 0;
 
     const path = group
       .append('path')
       .attr('stroke-width', Math.floor(Math.random() * 6) < 5 ? 2 : 8)
-      .attr(
-        'stroke',
-        Math.floor(Math.random() * 10) < 9 ? 'black' : 'rgb(200, 252, 160)'
-      )
+      .attr('stroke', interaction.kw === true ? 'rgb(200, 252, 160)' : 'black')
       .attr(
         'd',
         d3.line()(
@@ -187,7 +184,9 @@ function transitionGrid() {
 function connect() {
   console.log('Ready state', socket);
   if (!socket || socket.readyState == 3) {
-    socket = new WebSocket(`ws://io.kodeworks.no/api/ws?rowseconds=${seconds}`);
+    socket = new WebSocket(
+      `ws://io.kodeworks.no/api/ws?rowseconds=${seconds}&fillrate=0.005&kwprob=0.999`
+    );
 
     socket.addEventListener('open', function (event) {
       console.log('Connected to server');
